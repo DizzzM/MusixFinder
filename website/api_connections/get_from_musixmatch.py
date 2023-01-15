@@ -1,7 +1,5 @@
 import requests
 
-from parameters import *
-
 
 def get_lyrics_by_isrc(isrc):
     request = requests.get(f'https://api.musixmatch.com/ws/1.1/track.get?track_isrc={isrc}&apikey={os.getenv('MUSIXMATCH_KEY')}').json()
