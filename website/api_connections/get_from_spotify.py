@@ -3,7 +3,6 @@ import base64
 import requests
 
 
-
 class SpotifyTrack:
     def __init__(self, raw_data):
         self.id = raw_data['id']
