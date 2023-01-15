@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link href="../static/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form class="auth-wrapper" method="post">
+        <div class="auth-content">
+            <h1 class="auth-label">Welcome to the club, buddy!</h1>
+
+            <div class="auth-inputs">
+                <label class="auth-input-label">
+                    E-mail: <input type="text" placeholder="Email" name="email" id="login" class="auth-input">
+                </label>
+                <label class="auth-input-label">
+                    Password:<input type="password" placeholder="Password" name="password" id="password" class="auth-input">
+                </label>
+                <label class="auth-input-label">
+                    Confirm Password:<input type="password" placeholder="Confirm password" id="confirm_password" class="auth-input">
+                </label>
+            </div>
+
+            <button id="register" class="auth-button" disabled="disabled">SIGN UP</button>
+
+            <a href="{{url_for('auth.login')}}" class="auth-button" style="background-color: white ;color: black; border-color: white">IN CLUB?</a>
+        </div>
+        {% if error %}
+        <p id="auth-hint" class="auth-hint" >
+            This e-mail is already used!<br>Password must contain at least one number ('1', '2', '3', '4', '5', '6', '7', '8', '9', '0'), special_character ('_', '.','/','@','=','-','+']) and be longer than 8 symbols
+        </p>
+            {% else %}
+        <p id="auth-hint" class="auth-hint" >
+        Password must contain at least one number ('1', '2', '3', '4', '5', '6', '7', '8', '9', '0'), special_character ('_', '.','/','@','=','-','+']) and be longer than 8 symbols
+        </p>
+        {% endif %}
+        <a href="{{url_for('views.home')}}" style="color: black;">To main page</a>
+    </form>
+</body>
+<script>
+    document.getElementById('login').addEventListener('keyup', function onEvent(){validate()})
+    document.getElementById('password').addEventListener('keyup', function onEvent(){validate()})
+    document.getElementById('confirm_password').addEventListener('keyup', function onEvent(){validate()})
+
+    function validate(){
+        const password = String(document.getElementById('password').value);
+        const confirm_password = String(document.getElementById('confirm_password').value);
+        const login = String(document.getElementById('login').value);
+        console.log('login: '+login)
+        console.log('pass: '+password)
+        console.log('c pass: '+confirm_password )
+        const validLogin = validateLogin(login)
+        const validPassword = validatePassword(password,confirm_password)
+        console.log('val Login: ' +validLogin)
+        console.log('val pass: ' +validPassword)
+        if ((validPassword)&&(validLogin)){
+            document.getElementById('register').disabled = false
+            document.getElementById('auth-hint').style = 'background-color: rgba(255, 255, 255, 0); color: rgba(0, 0, 0, 0);'
+        }
+        else{
+            document.getElementById('register').disabled = true
+            document.getElementById('auth-hint').style = 'background-color: rgba(255, 255, 255, 1); color: rgba(0, 0, 0, 1);'
+
+        }
+    }
+    function validateLogin(login){
+        login = String(login)
+        const reg = /.+@gmail\.com/
+        match = login.match(reg)
+        return (match !== null) && (match.length > 0);
+
+    }
+    function validatePassword(password, confirm_password){
+        if (password.length < 8) return false
+        var numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+        if (!(numbers.some((number) => password.includes(number)))) return false
+        var special_chars = ['_', '.','/','@','=','-','+']
+        if (!(special_chars.some((char) => password.includes(char)))) return false
+        return password === confirm_password;
+    }
+</script>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stats</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <form method="post" class="nav">
+            <div class="navigation-left">
+                <a href="{{url_for('views.home')}}" class="navigation-link" style="color: black; background-color: white">Playlist of the Day</a>
+                <a href="{{url_for('views.random')}}" class="navigation-link">Random</a>
+            </div>
+            <label class="navigation-searchbar">
+                <input  name="query" type="search" class="searchbar" id="searchbar">
+                <button name="search" class="search-button" type="submit" id="search">
+                    <img src="../static/searchicon.png" height="16" , width="16" alt="<">
+                </button>
+            </label>
+            <div class="navigation-right">
+                <a href="{{url_for('views.favourites')}}" class="navigation-link">Favourites</a>
+                <a href="{{url_for('views.stats')}}" class="navigation-link">Stats</a>
+                {% if user.is_authenticated %}
+                <a href="{{url_for('views.profile')}}" class="navigation-link">Account</a>
+                {% else %}
+                <a href="{{url_for('views.profile')}}" class="navigation-link">Join free!</a>
+                {% endif %}}
+            </div>
+        </form>
+    </header>
+    <main style="flex-direction: column">
+        <h1 style="display: flex;height: 10%; justify-content: end; box-sizing: border-box; padding-right: 5%; font-size: 36px">Statistics</h1>
+        <div class="graphs">
+            <div id='chart1' class="plot"></div>
+            <div id='chart2' class="plot"></div>
+        </div>
+    </main>
+</body>
+<script>
+    document.getElementById("searchbar").addEventListener("keypress", function onEvent(event) {
+        if (event.key === "Enter") {
+            document.getElementById("search").click();
+        }
+    });
+    document.getElementById("search").addEventListener("click", function onEvent() {
+        console.log(document.getElementById("searchbar").value)
+    });
+
+</script>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+    var graph1 = {{genres_plot | safe}};
+    Plotly.plot('chart1',graph1,{});
+
+    var graph2 = {{artists_plot | safe}};
+    Plotly.plot('chart2',graph2,{});
+</script>
+</html>

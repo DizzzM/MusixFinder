@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <link href="../static/styles.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <form class="auth-wrapper" method="post">
+        <div class="auth-content">
+            <h1 class="auth-label">Nice to see you again!</h1>
+
+            <div class="auth-inputs">
+                <label class="auth-input-label">
+                    E-mail: <input type="text" placeholder="Email" name="email" id="login" class="auth-input">
+                </label>
+                <label class="auth-input-label">
+                    Password:<input type="password" placeholder="Password" name="password" id="password" class="auth-input">
+                </label>
+            </div>
+
+            <input type="submit" class="auth-button" value="SIGN IN">
+
+            <a href="{{url_for('auth.register')}}" class="auth-button" style="background-color: white ;color: black; border-color: white">NEW USER?</a>
+        </div>
+        {% if error %}
+        <p id="error" style="width: 50%; text-align: center; font-size: 16px; background-color: white;color: black; padding: 15px; border-radius: 2em">Invalid email or password</p>
+        {% endif %}
+        <a href="{{url_for('views.home')}}" style="color: black">To main page</a>
+    </form>
+</body>
+<script>
+</script>
+</html>

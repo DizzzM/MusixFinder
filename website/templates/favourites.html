@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Favourites</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <form method="post" class="nav">
+            <div class="navigation-left">
+                <a href="{{url_for('views.home')}}" class="navigation-link" style="color: black; background-color: white">Playlist of the Day</a>
+                <a href="{{url_for('views.random')}}" class="navigation-link">Random</a>
+            </div>
+            <label class="navigation-searchbar">
+                <input  name="query" type="search" class="searchbar" id="searchbar">
+                <button name="search" class="search-button" type="submit" id="search">
+                    <img src="../static/searchicon.png" height="16" , width="16" alt="<">
+                </button>
+            </label>
+            <div class="navigation-right">
+                <a href="{{url_for('views.favourites')}}" class="navigation-link">Favourites</a>
+                <a href="{{url_for('views.stats')}}" class="navigation-link">Stats</a>
+                {% if user.is_authenticated %}
+                <a href="{{url_for('views.profile')}}" class="navigation-link">Account</a>
+                {% else %}
+                <a href="{{url_for('views.profile')}}" class="navigation-link">Join free!</a>
+                {% endif %}}
+            </div>
+        </form>
+    </header>
+    <main style="flex-direction: column; align-items: center">
+        <h1 style="height: 5%">Favourites</h1>
+        <div class="track-list">
+            {% for track in tracklist %}
+            <div class="track">
+                <img src="{{track.image}}" class="track-image">
+                <div class="track-middle">
+                    <a href="{{url_for('views.track_info')}}?isrc={{track.isrc}}" class="track-name">{{track.name}}</a>
+                    <a href="{{url_for('views.artist_info')}}?id={{track.artist_id}}" class="track-artist">{{track.artist_name}}</a>
+                    {% if track.lyrics != "None" %}
+                            <a href="{{track.lyrics}}" class="track-lyrics">Lyrics</a>
+                    {% endif %}
+                </div>
+                <div class="track-links">
+                    <a href="{{track.spotify_url}}" class="track-link">
+                        <img src="../static/spotify.png" height="16" , width="16" alt=" ">&nbsp;Spotify
+                    </a>
+                    <a href="{{track.itunes_url}}" class="track-link">
+                        <img src="../static/itunes.png" height="16" , width="16" alt=" ">&nbsp;iTunes
+                    </a>
+                    <a href="{{track.yt_url}}" class="track-link">
+                        <img src="../static/youtube.png" height="16" , width="16" alt=" ">&nbsp;YT Music
+                    </a>
+                    <a href="{{track.deezer_url}}" class="track-link">
+                        <img src="../static/deezer.png" height="16" , width="16" alt=" ">&nbsp;Deezer
+                    </a>
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+<script>
+    document.getElementById("searchbar").addEventListener("keypress", function onEvent(event) {
+        if (event.key === "Enter") {
+            document.getElementById("search").click();
+        }
+    });
+    document.getElementById("search").addEventListener("click", function onEvent() {
+        console.log(document.getElementById("searchbar").value)
+    });
+</script>
+</html>
