@@ -1,5 +1,4 @@
 from os import path
-
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -37,7 +36,6 @@ def create_app():
 
 def create_db(app):
     if not path.exists(f'instance/{DB_NAME}'):
-        print('db created')
         with app.app_context():
             db.create_all()
     

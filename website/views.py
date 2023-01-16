@@ -13,13 +13,17 @@ def home():
         query = request.form['query']
         return redirect(url_for('views.search') + f'?query={query}')
 
-    tracklist = get_random_tracklist()
+    tracklist = get_playlist_of_the_day()
     return render_template('playlist_of_the_day.html', user=user, tracklist=tracklist)
 
 
 @views.route('/search', methods=['GET', 'POST'])
 def search():
     user = current_user
+    if request.method == 'POST':
+        query = request.form['query']
+        return redirect(url_for('views.search') + f'?query={query}')
+    
     query = request.args['query']
     tracklist = get_tracks(query)
     return render_template('playlist_of_the_day.html', user=user, tracklist=tracklist)

@@ -2,6 +2,8 @@ import base64
 
 import requests
 
+from parameters import *
+
 
 class SpotifyTrack:
     def __init__(self, raw_data):
@@ -42,7 +44,7 @@ class SpotifyAPI:
         url = "https://accounts.spotify.com/api/token"
         headers = {}
         data = {}
-        message = f"{os.getenv('CLIENT_ID')}:{os.getenv('CLIENT_SECRET')}"
+        message = f"{CLIENT_ID}:{CLIENT_SECRET}"
         message_bytes = message.encode('ascii')
         base64bytes = base64.b64encode(message_bytes)
         base64message = base64bytes.decode('ascii')

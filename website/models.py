@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 from . import db
 
@@ -49,6 +50,7 @@ class History(db.Model):
     history_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     track_id = db.Column(db.String, db.ForeignKey('track.isrc'), nullable=False)
+    date = db.Column(db.Date, default=datetime.date.today())
 
 
 class Subscription(db.Model):
@@ -112,9 +114,8 @@ class Query(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.String)
     result = db.Column(db.String, db.ForeignKey('track.isrc'))
-    date = db.Column(db.String)
+    date = db.Column(db.Date, default=datetime.date.today())
 
-    def __init__(self, value, result, query_date):
+    def __init__(self, value, result):
         self.value = value
         self.result = result
-        self.date = query_date

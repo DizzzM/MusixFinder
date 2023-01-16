@@ -137,7 +137,7 @@ def get_tracks(query):
 
     # Try to find query in DB
     results = Query.query.filter(Query.value.contains(query)).all()
-    if len(results) != 0 and not any(result.date != date.today().strftime("%d/%m/%Y") for result in results):
+    if len(results) != 0 and not any(result.date != date.today() for result in results):
         # Get tracks from DB by query
 
         for result in results:
@@ -159,10 +159,7 @@ def get_tracks(query):
 
         # Add query to DB
         for track in tracklist:
-            in_table = len(Query.query.filter(Query.result == track.isrc).all()) != 0
-            if not in_table:
-                db.session.add(
-                    Query(value=query.lower(), result=track.isrc, query_date=date.today().strftime("%d/%m/%Y")))
+            db.session.add(Query(value=query.lower(), result=track.isrc))
 
     db.session.commit()
     tracklist.sort(key=lambda x: x.popularity, reverse=True)
@@ -285,8 +282,27 @@ def get_artist_tracks(artist):
     return tracklist
 
 
+def get_playlist_of_the_day():
+    current_playlist = History.query.filter_by(user_id=0).all()
+    if len(current_playlist) != 0:
+        if current_playlist[0].date != date.today():
+            for record in current_playlist:
+                db.session.delete(record)
+        else:
+            tracklist = []
+            for track in current_playlist:
+                track = Track.query.filter_by(isrc=track.track_id).first()
+                tracklist.append(track)
+            return tracklist
+    new_playlist = get_random_tracklist()
+    for track in new_playlist:
+        db.session.add(History(user_id=0, track_id=track.isrc))
+    db.session.commit()
+    return new_playlist
+
+
 def get_random_tracklist():
-    tracklist = Track.query.filter(Track.popularity >= 50).order_by(desc(Track.popularity)).all()
+    tracklist = Track.query.filter(Track.popularity >= 75).order_by(desc(Track.popularity)).all()
     return random.sample(tracklist, min(len(tracklist), 15))
 
 
@@ -300,11 +316,10 @@ def get_similar(track: Track, user_id):
     favourite_artists = set([favourite.artist_id for favourite in favourites])
     favourite_genres = set([favourite.genre for favourite in favourites])
 
-    most_suitable = Track.query.filter(Track.artist_id.in_(list(favourite_artists))).filter(
-        Track.genre.in_(list(favourite_genres))).all()
-    suitable = Track.query.filter(Track.genre.in_(list(favourite_genres))).all()
+    this_genre = Track.query.filter_by(genre=Track.genre).all()
+    suitable = Track.query.filter(Track.artist_name.in_(list(favourite_artists))).filter(Track.genre.in_(list(favourite_genres))).all()
     this_artist = Track.query.filter(Track.artist_id == track.artist_id).all()
-    tracklist = random.sample(most_suitable, min(len(most_suitable), 5)) + random.sample(suitable, min(len(suitable), 5)) + random.sample(this_artist, min(len(this_artist), 5))
+    tracklist = random.sample(this_genre, min(len(this_genre), 5)) + random.sample(suitable, min(len(suitable), 5)) + random.sample(this_artist, min(len(this_artist), 5))
     random.shuffle(tracklist)
     return tracklist
 
@@ -357,7 +372,7 @@ def add_to_history(track_id, user_id):
 
 
 def get_history(user_id):
-    history = History.query.filter_by(user_id=user_id).order_by(desc(History.history_id)).all()
+    history = History.query.filter_by(user_id=user_id).order_by(desc(History.date)).all()
     tracklist = []
     for item in history:
         track = Track.query.filter_by(isrc=item.track_id).first()
